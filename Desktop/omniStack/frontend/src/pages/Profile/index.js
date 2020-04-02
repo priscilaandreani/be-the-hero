@@ -1,5 +1,5 @@
 import React, { useEffect, useState  } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import {FiPower, FiTrash2}  from 'react-icons/fi'
 
 import api from '../../services/api';
@@ -11,6 +11,8 @@ export default function Profile(){
     const userId = localStorage.getItem('userId')
     const userName = localStorage.getItem('userName');
     const [incidents, setIncidents] = useState([]);
+
+    const history = useHistory();
 
     useEffect(()=> {
         api.get('profile', {
@@ -24,7 +26,7 @@ export default function Profile(){
 
     async function handleDeleteIncident(id){
         try{
-            await api.delete( `incident/${id}`, {
+            await api.delete( `incidents/${id}`, {
                 headers: {
                     Authorization: userId,
                 }
@@ -36,6 +38,13 @@ export default function Profile(){
         }
     }
 
+
+    function handleLogout() { 
+        localStorage.clear();    
+
+        history.push('/');
+    }
+
     return (
         <div className="profile-container">
             <header>
@@ -43,7 +52,9 @@ export default function Profile(){
                 <span>Bem Vinda, {userName}</span> 
 
                 <Link to="/incident/new" className="button">Cadastrar novo caso </Link>
-                <button type="button">
+                <button 
+                onClick={handleLogout}
+                type="button">
                     <FiPower size={18} color= "#e02041"/>
                 </button>
             </header>
